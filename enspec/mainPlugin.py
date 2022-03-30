@@ -1,3 +1,5 @@
+import logging
+
 from pathlib import Path
 
 from qgis.PyQt.QtCore import Qt
@@ -11,9 +13,15 @@ from qgis.PyQt.QtWidgets import (
 """ Core classes for EnSpec QGIS plugin. """
 
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
 # : ----------------- PLUGIN ----------------- :
 
 class EnSpecPlugin:
+
+    logger.info('Creating plugin...')
 
     _name = 'EnSpec'
 
@@ -26,12 +34,16 @@ class EnSpecPlugin:
 
     def initGui(self):
 
+        logger.info('Initializing plugin GUI...')
+
         # Create toolbar
         toolbar_name = f'{self._name} Toolbar'
         self.toolbar = QToolBar(toolbar_name)
         self.toolbar.setToolTip(toolbar_name)
         # Add toolbar to the window
         self.iface.mainWindow().addToolBar(Qt.TopToolBarArea, self.toolbar)
+
+        logger.info('Available utilities:' + str(self._utilities))
 
         # Create instances of the various utilities
         self.utils = [util(self) for util in self.__class__._utilities]
@@ -40,6 +52,9 @@ class EnSpecPlugin:
         # self.iface.mapCanvas().renderComplete.connect(self.myaction)
 
     def unload(self):
+
+        logger.info('Unloading plugin...')
+
         # Unload utilities
         for util in self.utils:
             util.unload()
@@ -56,15 +71,21 @@ class EnSpecPlugin:
 
 class EnSpecUtilityType(type):
 
+    logger.info('Defining `EnSpecUtilityType` metaclass.')
+
     def __new__(metacls, name, bases, attrs, **kwargs):
+        logger.info(f'New class with arguments`: metacls={metacls}, name={name}, bases={bases}, attrs={attrs}')
         cls = super().__new__(metacls, name, bases, attrs)
         if bases:
             # Register subclasses
+            logger.info(f'Registering subclass "{cls}"...')
             EnSpecPlugin._utilities.append(cls)
         return cls
 
 
 class EnSpecUtility(metaclass=EnSpecUtilityType):
+
+    logger.info('Creating new `EnSpecUtility`...')
 
     def __init__(self, name, icon, plugin):
 
@@ -82,6 +103,9 @@ class EnSpecUtility(metaclass=EnSpecUtilityType):
         self.initGui()
 
     def initGui(self):
+
+        logger.info(f'Initializing GUI for utility "{self.name}"...')
+
         # Create an action to launch the utility
         self.action = QAction(self.icon,
                               self.__class__.__name__,
@@ -101,6 +125,9 @@ class EnSpecUtility(metaclass=EnSpecUtilityType):
         self.plugin.toolbar.addAction(self.action)
 
     def unload(self):
+
+        logger.info(f'Unloading utility "{self.name}"...')
+
         # Disconnect signal-slot
         self.action.triggered.disconnect(self.run)
         self.connection = None
@@ -110,14 +137,17 @@ class EnSpecUtility(metaclass=EnSpecUtilityType):
         self.plugin.toolbar.removeAction(self.action)
 
     def run(self):
-        pass
+        logger.info(f'Launching utility "{self.__class__.__name__}"!')
 
 
 # : --------------- UTILITIES  --------------- :
 
 class TestUtility(EnSpecUtility):
 
+    logger.info('New subclass `TestUtility`')
+
     _icon = Path(__file__).parent/'resource/qt/icon.png'
 
     def __init__(self, plugin):
+        logger.info(f'Initializing utility "{self.__class__.__name__}"...')
         super().__init__(name='Test Utility', icon=self._icon, plugin=plugin)
