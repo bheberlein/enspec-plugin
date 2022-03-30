@@ -1,6 +1,9 @@
 # Mac OS
 .DS_Store
 
+# PyCharm
+.idea
+
 # Compiled python bytecode
 __pycache__/
 *.py[cod]
