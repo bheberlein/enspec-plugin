@@ -1,0 +1,9 @@
+# Mac OS
+.DS_Store
+
+# Compiled python bytecode
+__pycache__/
+*.py[cod]
+
+# Packaged plugin files
+/EnSpec.zip

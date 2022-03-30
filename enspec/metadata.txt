@@ -1,0 +1,15 @@
+[general]
+name=EnSpec Plugin
+email=bheberlein@wisc.edu
+author=Brendan Heberlein
+qgisMinimumVersion=3.0
+description=Utilities for imaging spectrometer data.
+about=Developed by UW–Madison Environmental Spectroscopy Laboratory (EnSpec).
+version=0.0.1
+tracker=https://github.com/EnSpec/hypro
+repository=https://github.com/EnSpec/hypro
+homepage=https://enspec.github.io/hypro/
+icon=../resource/qt/icon.png
+
+experimental=True
+deprecated=False
