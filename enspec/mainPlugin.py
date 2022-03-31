@@ -69,21 +69,7 @@ class EnSpecPlugin:
 
 # : ----------- UTILITY FRAMEWORK ------------ :
 
-class EnSpecUtilityType(type):
-
-    logger.info('Defining `EnSpecUtilityType` metaclass.')
-
-    def __new__(metacls, name, bases, attrs, **kwargs):
-        logger.info(f'New class with arguments`: metacls={metacls}, name={name}, bases={bases}, attrs={attrs}')
-        cls = super().__new__(metacls, name, bases, attrs)
-        if bases:
-            # Register subclasses
-            logger.info(f'Registering subclass "{cls}"...')
-            EnSpecPlugin._utilities.append(cls)
-        return cls
-
-
-class EnSpecUtility(metaclass=EnSpecUtilityType):
+class EnSpecUtility:
 
     logger.info('Creating new `EnSpecUtility`...')
 
@@ -101,6 +87,11 @@ class EnSpecUtility(metaclass=EnSpecUtilityType):
             self.icon = None
 
         self.initGui()
+
+    def __init_subclass__(cls, **kwargs):
+        # Register subclasses
+        logger.info(f'Registering subclass "{cls}"...')
+        EnSpecPlugin._utilities.append(cls)
 
     def initGui(self):
 
